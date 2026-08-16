@@ -1,0 +1,29 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          # npm's trusted-publishing guidance: don't cache in release builds.
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      # Trusted Publishing (OIDC) needs a recent npm CLI - bundled version
+      # can lag behind what the registry requires for the OIDC exchange.
+      - run: npm install -g npm@latest
+      - run: npm publish --provenance --access public

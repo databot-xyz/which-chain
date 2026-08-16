@@ -1,0 +1,60 @@
+{
+  "name": "which-chain",
+  "version": "0.1.0",
+  "description": "Zero-dependency blockchain address shape detection - figure out which chain family a raw address string belongs to.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run build"
+  },
+  "keywords": [
+    "blockchain",
+    "crypto",
+    "address",
+    "validator",
+    "chain-detection",
+    "evm",
+    "solana",
+    "multichain"
+  ],
+  "author": "databot-xyz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/databot-xyz/which-chain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/databot-xyz/which-chain/issues"
+  },
+  "homepage": "https://github.com/databot-xyz/which-chain#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "eslint": "^9.19.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0",
+    "vitest": "^3.0.5"
+  }
+}
