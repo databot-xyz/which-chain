@@ -16,9 +16,20 @@ import {
   LITECOIN_PATTERN,
   DOGECOIN_PATTERN,
 } from "./families/bitcoinLike";
+import { STELLAR_PATTERN } from "./families/stellar";
+import { ALGORAND_PATTERN } from "./families/algorand";
+import { FILECOIN_PATTERN } from "./families/filecoin";
+import { CASHADDR_PATTERN } from "./families/cashaddr";
+import { TEZOS_PATTERN } from "./families/tezos";
+import {
+  verifyEip55,
+  verifyBase58Check,
+  verifyBitcoinLikeChecksum,
+  verifyBech32Checksum,
+} from "./checksum";
 
 function evmChain(id: string, name: string, aliases?: string[]): ChainDefinition {
-  return { id, name, family: "evm", pattern: EVM_PATTERN, aliases };
+  return { id, name, family: "evm", pattern: EVM_PATTERN, aliases, verifyChecksum: verifyEip55 };
 }
 
 /**
@@ -91,6 +102,7 @@ export const CHAINS: ChainDefinition[] = [
     name: "Tron",
     family: "tron",
     pattern: TRON_PATTERN,
+    verifyChecksum: verifyBase58Check,
   },
   {
     id: "ton",
@@ -110,24 +122,28 @@ export const CHAINS: ChainDefinition[] = [
     name: "Cosmos Hub",
     family: "bech32",
     pattern: BECH32_PATTERN,
+    verifyChecksum: verifyBech32Checksum,
   },
   {
     id: "osmosis",
     name: "Osmosis",
     family: "bech32",
     pattern: BECH32_PATTERN,
+    verifyChecksum: verifyBech32Checksum,
   },
   {
     id: "injective",
     name: "Injective",
     family: "bech32",
     pattern: BECH32_PATTERN,
+    verifyChecksum: verifyBech32Checksum,
   },
   {
     id: "celestia",
     name: "Celestia",
     family: "bech32",
     pattern: BECH32_PATTERN,
+    verifyChecksum: verifyBech32Checksum,
   },
 
   {
@@ -135,6 +151,7 @@ export const CHAINS: ChainDefinition[] = [
     name: "Cardano",
     family: "cardano",
     pattern: CARDANO_PATTERN,
+    verifyChecksum: verifyBech32Checksum,
   },
   {
     id: "polkadot",
@@ -167,6 +184,7 @@ export const CHAINS: ChainDefinition[] = [
     family: "bitcoin-like",
     pattern: BITCOIN_PATTERN,
     aliases: ["btc"],
+    verifyChecksum: verifyBitcoinLikeChecksum("bc1"),
   },
   {
     id: "litecoin",
@@ -174,6 +192,7 @@ export const CHAINS: ChainDefinition[] = [
     family: "bitcoin-like",
     pattern: LITECOIN_PATTERN,
     aliases: ["ltc"],
+    verifyChecksum: verifyBitcoinLikeChecksum("ltc1"),
   },
   {
     id: "dogecoin",
@@ -181,5 +200,43 @@ export const CHAINS: ChainDefinition[] = [
     family: "bitcoin-like",
     pattern: DOGECOIN_PATTERN,
     aliases: ["doge"],
+    verifyChecksum: verifyBase58Check,
+  },
+
+  {
+    id: "bitcoincash",
+    name: "Bitcoin Cash",
+    family: "cashaddr",
+    pattern: CASHADDR_PATTERN,
+    aliases: ["bch"],
+  },
+  {
+    id: "tezos",
+    name: "Tezos",
+    family: "tezos",
+    pattern: TEZOS_PATTERN,
+    aliases: ["xtz"],
+    verifyChecksum: verifyBase58Check,
+  },
+  {
+    id: "stellar",
+    name: "Stellar",
+    family: "stellar",
+    pattern: STELLAR_PATTERN,
+    aliases: ["xlm"],
+  },
+  {
+    id: "algorand",
+    name: "Algorand",
+    family: "algorand",
+    pattern: ALGORAND_PATTERN,
+    aliases: ["algo"],
+  },
+  {
+    id: "filecoin",
+    name: "Filecoin",
+    family: "filecoin",
+    pattern: FILECOIN_PATTERN,
+    aliases: ["fil"],
   },
 ];

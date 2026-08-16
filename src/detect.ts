@@ -1,10 +1,25 @@
-import type { DetectResult, Family } from "./types";
+import type { ChainDefinition, ChecksumStatus, DetectResult, Family } from "./types";
 import { listChains, getChainById } from "./registry";
+
+function checksumStatus(chain: ChainDefinition, address: string): ChecksumStatus {
+  if (!chain.verifyChecksum) return "unknown";
+
+  const result = chain.verifyChecksum(address);
+  if (result === undefined) return "unknown";
+  return result ? "valid" : "invalid";
+}
 
 /**
  * Every chain whose address shape matches. Standard EVM chains are
  * indistinguishable by shape alone, so a valid `0x...` address will match
  * every EVM chain in the registry at once - that's expected, not a bug.
+ *
+ * Each result carries a `checksum` status. This can help break ties between
+ * overlapping shape matches (e.g. a valid Tron address shape-matches Solana
+ * too, but only Tron's base58check checksum will come back "valid" - Solana
+ * addresses have no checksum scheme, so its status is "unknown" rather than
+ * "invalid"). Don't treat "unknown" as a rejection - it means "not checked",
+ * not "wrong".
  */
 export function detectChains(address: string): DetectResult[] {
   const normalized = address.trim();
@@ -15,7 +30,12 @@ export function detectChains(address: string): DetectResult[] {
 
   return listChains()
     .filter((chain) => chain.pattern.full.test(normalized))
-    .map((chain) => ({ chainId: chain.id, name: chain.name, family: chain.family }));
+    .map((chain) => ({
+      chainId: chain.id,
+      name: chain.name,
+      family: chain.family,
+      checksum: checksumStatus(chain, normalized),
+    }));
 }
 
 /**
@@ -44,4 +64,21 @@ export function isValidAddressFor(address: string, chainId: string): boolean {
   }
 
   return chain.pattern.full.test(address.trim());
+}
+
+/**
+ * Checks `address`'s checksum against one specific chain (or one of its
+ * aliases). Returns "unknown" for an unrecognized chain id, a shape-invalid
+ * address, or a chain/address with no checksum to check - see
+ * `ChecksumStatus`.
+ */
+export function verifyChecksum(address: string, chainId: string): ChecksumStatus {
+  const chain = getChainById(chainId);
+  const normalized = address.trim();
+
+  if (!chain || !chain.pattern.full.test(normalized)) {
+    return "unknown";
+  }
+
+  return checksumStatus(chain, normalized);
 }

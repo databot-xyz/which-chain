@@ -1,7 +1,7 @@
 {
   "name": "which-chain",
-  "version": "0.1.0",
-  "description": "Zero-dependency blockchain address shape detection - figure out which chain family a raw address string belongs to.",
+  "version": "0.2.0",
+  "description": "Zero-dependency blockchain address shape detection and checksum verification - figure out which chain family a raw address string belongs to.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -37,7 +37,11 @@
     "chain-detection",
     "evm",
     "solana",
-    "multichain"
+    "multichain",
+    "checksum",
+    "eip-55",
+    "base58check",
+    "bech32"
   ],
   "author": "databot-xyz",
   "license": "MIT",

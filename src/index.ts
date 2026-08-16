@@ -1,3 +1,9 @@
-export type { Family, AddressPattern, ChainDefinition, DetectResult } from "./types";
-export { detectChains, getAddressFamily, isValidAddressFor } from "./detect";
+export type {
+  Family,
+  AddressPattern,
+  ChainDefinition,
+  DetectResult,
+  ChecksumStatus,
+} from "./types";
+export { detectChains, getAddressFamily, isValidAddressFor, verifyChecksum } from "./detect";
 export { listChains, registerChain } from "./registry";
